@@ -15,25 +15,7 @@
     <link href="modal.css" rel="stylesheet"/>
 </head>
 <body onselectstart="return false">
-<!--对话部分-->
-<div class="share_img"><img src="we.jpg" alt=""></div>
 
-<div class="page_one">
-    <div class="content">
-        <div class="text_wrapper">
-            <img src="we.jpg" alt="">
-            <div class="text">
-                今天这个日子是属于你的，你是特别的，你是属于我的
-            </div>
-        </div>
-    </div>
-    <div class="btn-groups">
-        <div class="heart-btn">
-            <div id="yes" class="btn btn-a"><span>对对对</span></div>
-        </div>
-        <
-    </div>
-</div>
 <!--烟花部分-->
 <canvas id='cas' style="background-color:rgba(0,5,24,1)">
     浏览器不支持canvas
@@ -67,6 +49,13 @@
 <script src="jquery.min.js"></script>
 <script src="fire.js"></script>
 <script src="talk.js"></script>
+<script type="text/javascript">
+    window.onload = function(){
+        $('.page_one').addClass('hide');
+        $('.page_two').removeClass('hide');
+        initAnimate();
+    }
+</script>
 </body>
 
 </html>
