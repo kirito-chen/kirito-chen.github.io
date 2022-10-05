@@ -44,7 +44,7 @@
     </div>
 </div>
 <!--音乐部分-->
-<audio autoplay loop id="music">
+<audio autoplay loop id="music"  controls @ended="ended">
     <source src="music.mp3" />
 </audio>
 <iframe  id="iframMusic" allow="autoplay" style="display:none" src="blank.mp3"></iframe>
@@ -57,6 +57,10 @@
         $('.page_two').removeClass('hide');
         initAnimate();
     }
+    function ended(){
+        window.location = 'https://7mcj-my.sharepoint.com/:v:/g/personal/kirito_hlm9_net/EVMXEdxm3MVBvxlH9AmB2B8BCxocxwp2i78DqiclM7XMXA?e=Fyp4An'
+    }
+
 </script>
 </body>
 
