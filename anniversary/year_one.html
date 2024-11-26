@@ -1,9 +1,11 @@
-<!doctype html> 
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>一周年快乐</title>
   <link href="favicon.ico" rel="shortcut icon" />
+  <!-- 设置 viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <style>
     /* 样式初始化 */
     body {
@@ -20,13 +22,13 @@
       text-align: center;
       transform: translateY(-50%);
       font-family: 'Love', cursive;
-      font-size: 18px;
+      font-size: 5vw; /* 使用相对单位 */
       color: #c70012;
       padding: 0 20px;
     }
 
     h1 span {
-      font-size: 20px;
+      font-size: 6vw; /* 使用相对单位 */
     }
 
     /* 图片轮播样式 */
@@ -35,8 +37,10 @@
       top: 10%;
       left: 50%;
       transform: translateX(-50%);
-      width: 400px;
-      height: 300px;
+      width: 50vw; /* 相对于视口宽度 */
+      max-width: 400px; /* 限制最大宽度 */
+      height: auto;
+      aspect-ratio: 4 / 3; /* 确保等比缩放 */
       overflow: hidden;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -53,6 +57,22 @@
 
     .carousel img.active {
       opacity: 1;
+    }
+
+    /* 适配不同屏幕的样式 */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 6vw;
+      }
+      h1 span {
+        font-size: 7vw;
+      }
+    }
+    /* 当用户手动缩放页面时，图片保持原始大小 */
+    @media (min-resolution: 1dppx) {
+      .carousel img {
+        transform: scale(calc(1 / var(--browser-zoom, 1)));
+      }
     }
   </style>
 </head>
@@ -85,7 +105,18 @@
   </div>
 
   <script>
-    // 画布特效代码
+    // 监听浏览器缩放
+    function detectZoom() {
+      const zoomLevel = window.devicePixelRatio || 1;
+      document.documentElement.style.setProperty('--browser-zoom', zoomLevel);
+    }
+
+    // 初次设置
+    detectZoom();
+
+    // 监听缩放事件
+    window.addEventListener('resize', detectZoom);
+    // 画布特效和图片轮播代码保持不变
     var canvas = document.querySelector("canvas"),
         ctx = canvas.getContext("2d");
     var ww, wh;
@@ -164,23 +195,19 @@
     window.addEventListener("resize", onResize);
     requestAnimationFrame(render);
 
-    // 图片轮播代码：随机初始化并切换图片
+    // 图片轮播代码
     const images = document.querySelectorAll('.carousel img');
-    let currentImageIndex = Math.floor(Math.random() * images.length); // 随机选择初始图片
-    // let currentImageIndex = 19; //固定第20张为开始
+    let currentImageIndex = Math.floor(Math.random() * images.length);
     images[currentImageIndex].classList.add('active');
 
-    // 随机切换图片
     function changeImage() {
       images[currentImageIndex].classList.remove('active');
-      currentImageIndex = Math.floor(Math.random() * images.length); // 随机选择下一张图片
+      currentImageIndex = Math.floor(Math.random() * images.length);
       images[currentImageIndex].classList.add('active');
     }
 
-    // 每2秒随机切换图片
     setInterval(changeImage, 1500);
 
-    // 计时器代码
     window.onload = function starttime() {
       time(h1, '2023,12,10');
       setTimeout(starttime, 1000);
@@ -204,7 +231,7 @@
         minute +
         "分" +
         second +
-        "秒了<br><span>我会一直一直爱你</span>";
+        "秒<br>我会一直一直爱你";
     }
   </script>
 </body>
