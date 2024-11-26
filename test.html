@@ -1,0 +1,182 @@
+<!doctype html> 
+<html>
+<head>
+<meta charset="utf-8">
+<title>爱你</title>
+<link href="favicon.ico" rel="shortcut icon" />
+<style>
+/* 样式初始化 */
+body {
+  overflow: hidden;
+  margin: 0;
+  background-color: #f8f8f8;
+}
+
+h1 {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  transform: translateY(-50%);
+  font-family: 'Love', cursive;
+  font-size: 18px;
+  color: #c70012;
+  padding: 0 20px;
+}
+
+h1 span {
+  font-size: 20px;
+}
+
+/* 图片轮播样式 */
+.carousel {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 300px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.carousel img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.carousel img.active {
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+<h1 id="h1"></h1>
+<canvas></canvas> <!--canvas 画布-->
+
+<!-- 图片轮播容器 -->
+<div class="carousel">
+  <img src="assets/images/favicon.png" alt="Image 1" class="active">
+  <img src="assets/images/favicon.png" alt="Image 2">
+  <img src="assets/images/favicon.png" alt="Image 3">
+  <img src="assets/images/favicon.png" alt="Image 4">
+</div>
+
+<script>
+// 画布特效代码
+var canvas = document.querySelector("canvas"),
+  ctx = canvas.getContext("2d");
+var ww, wh;
+function onResize() {
+  ww = canvas.width = window.innerWidth;
+  wh = canvas.height = window.innerHeight;
+}
+ctx.strokeStyle = "red";
+ctx.shadowBlur = 25;
+ctx.shadowColor = "hsla(0, 100%, 60%,0.5)";
+var precision = 100;
+var hearts = [];
+function onMove(e) {
+  hearts.push(new Heart(e.clientX, e.clientY));
+  hearts.push(new Heart(e.clientX, e.clientY));
+}
+var Heart = function (x, y) {
+  this.x = x || Math.random() * ww;
+  this.y = y || Math.random() * wh;
+  this.size = Math.random() * 2 + 1;
+  this.speedX = (Math.random() - 0.5) * 8;
+  this.speedY = (Math.random() - 0.5) * 8;
+  this.speedSize = Math.random() * 0.05 + 0.01;
+  this.opacity = 1;
+  this.vertices = [];
+  for (var i = 0; i < precision; i++) {
+    var step = (i / precision - 0.5) * (Math.PI * 2);
+    var vector = {
+      x: 15 * Math.pow(Math.sin(step), 3),
+      y: -(13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 * step))
+    };
+    this.vertices.push(vector);
+  }
+};
+Heart.prototype.draw = function () {
+  this.size -= this.speedSize;
+  this.x += this.speedX;
+  this.y += this.speedY;
+  ctx.save();
+  ctx.translate(-1000, this.y);
+  ctx.scale(this.size, this.size);
+  ctx.beginPath();
+  for (var i = 0; i < precision; i++) {
+    var vector = this.vertices[i];
+    ctx.lineTo(vector.x, vector.y);
+  }
+  ctx.globalAlpha = this.size;
+  ctx.shadowBlur = Math.round((3 - this.size) * 10);
+  ctx.shadowColor = "hsla(0, 100%, 60%,0.5)";
+  ctx.shadowOffsetX = this.x + 1000;
+  ctx.globalCompositeOperation = "screen";
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+};
+function render() {
+  requestAnimationFrame(render);
+  hearts.push(new Heart());
+  ctx.clearRect(0, 0, ww, wh);
+  for (var i = 0; i < hearts.length; i++) {
+    hearts[i].draw();
+    if (hearts[i].size <= 0) {
+      hearts.splice(i, 1);
+      i--;
+    }
+  }
+}
+onResize();
+window.addEventListener("mousemove", onMove);
+window.addEventListener("resize", onResize);
+requestAnimationFrame(render);
+
+// 图片轮播代码
+let currentImageIndex = 0;
+const images = document.querySelectorAll('.carousel img');
+function changeImage() {
+  images[currentImageIndex].classList.remove('active');
+  currentImageIndex = (currentImageIndex + 1) % images.length;
+  images[currentImageIndex].classList.add('active');
+}
+setInterval(changeImage, 3000); // 每3秒切换一张图片
+
+// 计时器代码
+window.onload = function starttime() {
+  time(h1, '2023,12,10');
+  setTimeout(starttime, 1000);
+};
+function time(obj, futimg) {
+  var nowtime = new Date().getTime();
+  var futruetime = new Date(futimg).getTime();
+  var msec = nowtime - futruetime;
+  var time = msec / 1000;
+  var day = parseInt(time / 86400);
+  var hour = parseInt(time / 3600) - 24 * day;
+  var minute = parseInt((time % 3600) / 60);
+  var second = parseInt(time % 60);
+  obj.innerHTML =
+    "小可可<br>咱俩在一起的时间已经：<br>" +
+    day +
+    "天" +
+    hour +
+    "小时" +
+    minute +
+    "分" +
+    second +
+    "秒了<br><span>我爱你</span>";
+}
+</script>
+</body>
+</html>
