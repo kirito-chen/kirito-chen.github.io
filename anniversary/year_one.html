@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="zh">
 <head>
   <meta charset="utf-8">
   <title>一周年快乐</title>
@@ -68,12 +68,6 @@
         font-size: 7vw;
       }
     }
-    /* 当用户手动缩放页面时，图片保持原始大小 */
-    @media (min-resolution: 1dppx) {
-      .carousel img {
-        transform: scale(calc(1 / var(--browser-zoom, 1)));
-      }
-    }
   </style>
 </head>
 <body>
@@ -105,18 +99,7 @@
   </div>
 
   <script>
-    // 监听浏览器缩放
-    function detectZoom() {
-      const zoomLevel = window.devicePixelRatio || 1;
-      document.documentElement.style.setProperty('--browser-zoom', zoomLevel);
-    }
-
-    // 初次设置
-    detectZoom();
-
-    // 监听缩放事件
-    window.addEventListener('resize', detectZoom);
-    // 画布特效和图片轮播代码保持不变
+    // 爱心背景特效
     var canvas = document.querySelector("canvas"),
         ctx = canvas.getContext("2d");
     var ww, wh;
@@ -134,6 +117,12 @@
     function onMove(e) {
       hearts.push(new Heart(e.clientX, e.clientY));
       hearts.push(new Heart(e.clientX, e.clientY));
+    }
+
+    function onTouchMove(e) {
+      const touch = e.touches[0];
+      hearts.push(new Heart(touch.clientX, touch.clientY));
+      hearts.push(new Heart(touch.clientX, touch.clientY));
     }
 
     var Heart = function(x, y) {
@@ -192,24 +181,30 @@
 
     onResize();
     window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onTouchMove);
     window.addEventListener("resize", onResize);
     requestAnimationFrame(render);
 
-    // 图片轮播代码
+    // 图片轮播逻辑
     const images = document.querySelectorAll('.carousel img');
     let currentImageIndex = Math.floor(Math.random() * images.length);
     images[currentImageIndex].classList.add('active');
 
     function changeImage() {
       images[currentImageIndex].classList.remove('active');
-      currentImageIndex = Math.floor(Math.random() * images.length);
+      let nextImageIndex;
+      do {
+        nextImageIndex = Math.floor(Math.random() * images.length);
+      } while (nextImageIndex === currentImageIndex);
+      currentImageIndex = nextImageIndex;
       images[currentImageIndex].classList.add('active');
     }
 
-    setInterval(changeImage, 1500);
+    setInterval(changeImage, 2000);
 
+    // 一周年计时
     window.onload = function starttime() {
-      time(h1, '2023,12,10');
+      time(document.getElementById('h1'), '2023,12,10');
       setTimeout(starttime, 1000);
     };
 
